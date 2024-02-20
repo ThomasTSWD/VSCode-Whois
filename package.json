@@ -1,0 +1,39 @@
+{
+	"name": "codewhois",
+	"displayName": "Code Whois",
+	"version": "1.0.0",
+	"description": "Une extension cool pour faire un whois dans VSCode",
+	"engines": {
+		"vscode": "^1.60.0"
+	},
+	"activationEvents": [
+		"onCommand:extension.cleanFileNames"
+	],
+	"main": "extension.js",
+	"contributes": {
+		"commands": [
+			{
+				"command": "extension.codeWhois",
+				"title": "Whois Code Whois"
+			}
+		],
+		"views": {
+			"explorer": [
+				{
+					"id": "codeWhois",
+					"name": "Whois sans pub",
+					"when": "explorerResourceIsFolder"
+				}
+			]
+		}
+	},
+	"publisher": "ThomasTSWD",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/ThomasTSWD/code-whois.git"
+	},
+	"icon": "icon.png",
+	"dependencies": {
+		"whois": "^2.14.0"
+	}
+}

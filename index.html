@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Whois Lookup</title>
+	</head>
+	<body>
+		<h1 style="padding: 3%; line-height: 1.5em; padding-bottom: 0">
+			DNS and WHOIS
+		</h1>
+
+		<div id="dnsResult" style="padding: 3%; line-height: 1.5em"></div>
+		<hr style="opacity: 0.2" />
+		<div id="whoisResult" style="padding: 3%; line-height: 1.5em"></div>
+
+		<script>
+			const vscode = acquireVsCodeApi();
+
+			// Écouter les messages provenant de extension.js
+			window.addEventListener("message", (event) => {
+				const message = event.data;
+				if (message.command === "updateWhoisData") {
+					// Mettre à jour le contenu HTML avec les données Whois
+					document.getElementById("whoisResult").innerText = message.data;
+				} else if (message.command === "updateDnsRecords") {
+					// Mettre à jour le contenu HTML avec les enregistrements DNS
+					const dnsRecords = message.data
+						.map((record) => {
+							return Object.entries(record)
+								.map(([key, value]) => `${key}: ${value}`)
+								.join("<br>");
+						})
+						.join("<br><br>"); // Utiliser '<br>' pour afficher chaque enregistrement sur une ligne séparée
+					document.getElementById("dnsResult").innerHTML =
+						"Enregistrements DNS :<br>" + dnsRecords;
+				}
+			});
+		</script>
+	</body>
+</html>

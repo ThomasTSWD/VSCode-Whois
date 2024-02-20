@@ -1,6 +1,6 @@
 {
 	"name": "codewhois",
-	"displayName": "Code Whois",
+	"displayName": "VS Code Whois",
 	"version": "1.0.0",
 	"description": "Une extension cool pour faire un whois dans VSCode",
 	"engines": {

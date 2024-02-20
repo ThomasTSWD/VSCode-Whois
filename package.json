@@ -16,16 +16,7 @@
 				"command": "extension.codeWhois",
 				"title": "Whois Code Whois"
 			}
-		],
-		"views": {
-			"explorer": [
-				{
-					"id": "codeWhois",
-					"name": "Whois sans pub",
-					"when": "explorerResourceIsFolder"
-				}
-			]
-		}
+		]
 	},
 	"publisher": "ThomasTSWD",
 	"repository": {

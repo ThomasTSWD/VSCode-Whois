@@ -1,6 +1,6 @@
 {
   "name": "codewhois",
-  "displayName": "VS Code Whois",
+  "displayName": "VSCode Whois",
   "description": "Look up WHOIS, RDAP and DNS records for any domain without leaving VS Code.",
   "version": "1.1.0",
   "author": "ThomasTSWD",
@@ -8,12 +8,12 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/ThomasTSWD/VsCode-whois"
+    "url": "https://github.com/ThomasTSWD/VSCode-Whois"
   },
   "bugs": {
-    "url": "https://github.com/ThomasTSWD/VsCode-whois/issues"
+    "url": "https://github.com/ThomasTSWD/VSCode-Whois/issues"
   },
-  "homepage": "https://github.com/ThomasTSWD/VsCode-whois#readme",
+  "homepage": "https://github.com/ThomasTSWD/VSCode-Whois#readme",
   "icon": "images/icon.png",
   "keywords": [
     "whois",

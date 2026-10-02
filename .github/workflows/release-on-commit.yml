@@ -1,6 +1,7 @@
 # .github/workflows/release-on-commit.yml
 # Allow Read / Write Settings > Actions
-# Commit with v.x.x.x
+# Release: bump package.json, add a "## [x.y.z]" section to CHANGELOG.md,
+# then commit with "chore(release): vx.y.z"
 
 name: Release VSIX on Commit Message
 
@@ -9,88 +10,83 @@ on:
     branches:
       - master
 
+permissions:
+  contents: write
+
 jobs:
   build-and-release:
-    if: contains(github.event.head_commit.message, 'v')
+    if: "${{ startsWith(github.event.head_commit.message, 'chore(release): v') }}"
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v3
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-    - name: Setup Node.js
-      uses: actions/setup-node@v3
-      with:
-        node-version: '22'
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
 
-    - name: Install dependencies
-      run: npm install
+      - name: Install dependencies
+        run: npm ci
 
-    - name: Extract version from commit message
-      id: extract_version
-      run: echo "VERSION=$(echo '${{ github.event.head_commit.message }}' | grep -o 'v[0-9]*\.[0-9]*\.[0-9]*')" >> $GITHUB_OUTPUT
+      - name: Extract version from commit message
+        id: extract_version
+        env:
+          COMMIT_MSG: ${{ github.event.head_commit.message }}
+        run: |
+          SUBJECT=$(printf '%s\n' "$COMMIT_MSG" | head -n 1)
+          if [[ ! "$SUBJECT" =~ ^chore\(release\):\ v([0-9]+\.[0-9]+\.[0-9]+)$ ]]; then
+            echo "Commit subject must be exactly 'chore(release): vX.Y.Z'."
+            exit 1
+          fi
+          echo "VERSION=v${BASH_REMATCH[1]}" >> "$GITHUB_OUTPUT"
 
-    - name: Update package.json version
-      run: |
-        VERSION_WITHOUT_V=$(echo ${{ steps.extract_version.outputs.VERSION }} | sed 's/^v//')
-        npm version $VERSION_WITHOUT_V --no-git-tag-version
+      - name: Check version consistency
+        env:
+          VERSION: ${{ steps.extract_version.outputs.VERSION }}
+        run: |
+          PKG_VERSION=$(node -p "require('./package.json').version")
+          if [ "v$PKG_VERSION" != "$VERSION" ]; then
+            echo "package.json version ($PKG_VERSION) does not match $VERSION."
+            exit 1
+          fi
+          if git ls-remote --exit-code --tags origin "refs/tags/$VERSION" > /dev/null; then
+            echo "Tag $VERSION already exists."
+            exit 1
+          fi
 
-    - name: Create temporary .vscodeignore
-      run: |
-        echo ".github/**" > .vscodeignore
-        echo ".vscode/**" >> .vscodeignore
-        echo ".gitignore" >> .vscodeignore
+      - name: Extract release notes from CHANGELOG
+        env:
+          VERSION: ${{ steps.extract_version.outputs.VERSION }}
+        run: |
+          awk -v v="${VERSION#v}" '/^## \[/ { f = index($0, "## [" v "]") == 1; next } f' CHANGELOG.md > RELEASE_NOTES.md
+          if ! grep -q '[^[:space:]]' RELEASE_NOTES.md; then
+            echo "No '## [${VERSION#v}]' section found in CHANGELOG.md."
+            exit 1
+          fi
 
-    - name: Package the extension
-      run: |
-        npm install -g @vscode/vsce
-        vsce package
+      - name: Lint
+        run: npm run lint
 
-    - name: Remove temporary .vscodeignore
-      run: rm .vscodeignore
+      - name: Get repository name
+        run: echo "REPO_NAME=$(basename "$GITHUB_REPOSITORY")" >> "$GITHUB_ENV"
 
-    - name: Get repository name
-      id: get_repo
-      run: echo "REPO_NAME=$(basename $GITHUB_REPOSITORY)" >> $GITHUB_ENV
+      - name: Package the extension
+        id: package_vsix
+        env:
+          VERSION: ${{ steps.extract_version.outputs.VERSION }}
+        run: |
+          VSIX_FILE="${REPO_NAME}-${VERSION}.vsix"
+          npm run package -- --out "$VSIX_FILE"
+          echo "VSIX_FILE=$VSIX_FILE" >> "$GITHUB_OUTPUT"
 
-    - name: Rename VSIX file
-      id: rename_vsix
-      run: |
-        OLD_VSIX=$(ls *.vsix)
-        NEW_VSIX="${{ env.REPO_NAME }}-${{ steps.extract_version.outputs.VERSION }}.vsix"
-        mv "$OLD_VSIX" "$NEW_VSIX"
-        echo "VSIX_FILE=$NEW_VSIX" >> $GITHUB_OUTPUT
-
-    - name: Check if tag exists
-      id: check_tag
-      run: |
-        TAG_EXISTS=$(git tag -l "${{ steps.extract_version.outputs.VERSION }}")
-        if [ -n "$TAG_EXISTS" ]; then
-          echo "Tag already exists."
-          echo "tag_exists=true" >> $GITHUB_OUTPUT
-        else
-          echo "tag_exists=false" >> $GITHUB_OUTPUT
-        fi
-
-    - name: Create Release
-      id: create_release
-      if: steps.check_tag.outputs.tag_exists == 'false'
-      uses: actions/create-release@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        tag_name: ${{ steps.extract_version.outputs.VERSION }}
-        release_name: Release ${{ steps.extract_version.outputs.VERSION }}
-        draft: false
-        prerelease: false
-
-    - name: Upload VSIX to Release
-      uses: actions/upload-release-asset@v1
-      if: steps.check_tag.outputs.tag_exists == 'false'
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./${{ steps.rename_vsix.outputs.VSIX_FILE }}
-        asset_name: ${{ steps.rename_vsix.outputs.VSIX_FILE }}
-        asset_content_type: application/octet-stream
+      - name: Create Release and upload VSIX
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.extract_version.outputs.VERSION }}
+          target_commitish: ${{ github.sha }}
+          name: Release ${{ steps.extract_version.outputs.VERSION }}
+          body_path: RELEASE_NOTES.md
+          files: ${{ steps.package_vsix.outputs.VSIX_FILE }}

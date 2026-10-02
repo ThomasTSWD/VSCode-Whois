@@ -1,30 +1,78 @@
 {
-	"name": "codewhois",
-	"displayName": "VS Code Whois",
-	"version": "1.0.0",
-	"description": "Une extension cool pour faire un whois dans VSCode",
-	"engines": {
-		"vscode": "^1.60.0"
-	},
-	"activationEvents": [
-		"onCommand:extension.cleanFileNames"
-	],
-	"main": "extension.js",
-	"contributes": {
-		"commands": [
-			{
-				"command": "extension.codeWhois",
-				"title": "Whois Code Whois"
-			}
-		]
-	},
-	"publisher": "ThomasTSWD",
-	"repository": {
-		"type": "git",
-		"url": "https://github.com/ThomasTSWD/code-whois.git"
-	},
-	"icon": "icon.png",
-	"dependencies": {
-		"whois": "^2.14.0"
-	}
+  "name": "codewhois",
+  "displayName": "VS Code Whois",
+  "description": "Look up WHOIS, RDAP and DNS records for any domain without leaving VS Code.",
+  "version": "1.0.123",
+  "author": "ThomasTSWD",
+  "publisher": "ThomasTSWD",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ThomasTSWD/VsCode-whois"
+  },
+  "bugs": {
+    "url": "https://github.com/ThomasTSWD/VsCode-whois/issues"
+  },
+  "homepage": "https://github.com/ThomasTSWD/VsCode-whois#readme",
+  "icon": "images/icon.png",
+  "keywords": [
+    "whois",
+    "rdap",
+    "dns",
+    "domain",
+    "lookup"
+  ],
+  "engines": {
+    "vscode": "^1.120.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "capabilities": {
+    "untrustedWorkspaces": {
+      "supported": true
+    },
+    "virtualWorkspaces": true
+  },
+  "activationEvents": [],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "codewhois.lookup",
+        "title": "Look Up Domain",
+        "category": "Whois"
+      }
+    ],
+    "menus": {
+      "editor/context": [
+        {
+          "command": "codewhois.lookup",
+          "when": "editorHasSelection",
+          "group": "9_whois"
+        }
+      ],
+      "commandPalette": [
+        {
+          "command": "codewhois.lookup"
+        }
+      ]
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "lint": "eslint src",
+    "test": "npm run compile && node --test \"out/**/*.test.js\"",
+    "package": "vsce package"
+  },
+  "devDependencies": {
+    "@types/node": "22.x",
+    "@types/vscode": "^1.120.0",
+    "@vscode/vsce": "^4.0.0",
+    "eslint": "^9.39.3",
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.56.1"
+  }
 }

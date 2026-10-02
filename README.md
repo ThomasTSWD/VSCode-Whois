@@ -1,27 +1,35 @@
-# Whois et Enregistrements DNS pour VS Code
+# VS Code Whois
 
-## Introduction
+[![Release](https://img.shields.io/github/v/release/ThomasTSWD/VsCode-whois)](https://github.com/ThomasTSWD/VsCode-whois/releases/latest)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
-**Whois et Enregistrements DNS pour VS Code** est une extension pour Visual Studio Code qui vous permet de rechercher des informations Whois et d'afficher les enregistrements DNS pour un domaine donné directement depuis l'éditeur de code.
+Look up WHOIS, RDAP and DNS records for any domain without leaving VS Code.
 
-## Fonctionnalités
+## Features
 
-- Recherchez les informations Whois pour un domaine spécifique.
-- Affichez tous les types d'enregistrements DNS pour un domaine donné.
-- Utilisez-le directement depuis l'éditeur de code ou via des commandes enregistrées.
+- Registration details: registrar, dates, days left before expiry, status, name servers, DNSSEC
+- DNS records: A, AAAA, CNAME, MX, NS, TXT, SOA and CAA, with one-click copy
+- Raw WHOIS output from the right server, including the registrar referral
+- Select a domain or URL in any editor, right-click, **Look Up Domain**
+- Recent lookups, internationalized domain names, light and dark themes
 
-## Utilisation
+## Installation
 
-### Rechercher des informations Whois
+1. Download the latest `.vsix` from the [Releases](https://github.com/ThomasTSWD/VsCode-whois/releases/latest) page
+2. In VS Code, run **Extensions: Install from VSIX...** and select the file
 
-1. Ouvrez Visual Studio Code.
-2. Activez l'extension en cliquant sur l'icône de l'extension ou en utilisant des raccourcis clavier.
-3. Entrez le domaine pour lequel vous souhaitez rechercher des informations Whois.
-4. Appuyez sur Entrée pour confirmer la recherche.
+## Usage
 
-### Afficher les enregistrements DNS
+Run **Whois: Look Up Domain** from the Command Palette and type a domain, or select one in an editor and use the context menu.
 
-1. Ouvrez Visual Studio Code.
-2. Activez l'extension en cliquant sur l'icône de l'extension ou en utilisant des raccourcis clavier.
-3. Entrez le domaine pour lequel vous souhaitez afficher les enregistrements DNS.
-4. Appuyez sur Entrée pour afficher les résultats.
+## Requirements
+
+Internet access: lookups go to the IANA directory, the registry's RDAP and WHOIS servers (port 43) and your system DNS resolver.
+
+## Changelog
+
+See [CHANGELOG.md](CHANGELOG.md).
+
+## License
+
+[MIT](LICENSE)

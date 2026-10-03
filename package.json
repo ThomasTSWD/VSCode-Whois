@@ -2,7 +2,7 @@
   "name": "codewhois",
   "displayName": "VSCode Whois",
   "description": "Look up WHOIS, RDAP and DNS records for any domain without leaving VS Code.",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "author": "thomas-serment",
   "publisher": "thomas-serment",
   "license": "MIT",

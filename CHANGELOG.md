@@ -3,6 +3,12 @@
 All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [1.1.2] - 2026-10-03
+
+### Changed
+
+- Account renamed to thomas-serment: publisher, author and repository links updated
+
 ## [1.1.1] - 2026-10-02
 
 ### Changed

@@ -1,6 +1,6 @@
 # VSCode Whois
 
-[![Release](https://img.shields.io/github/v/release/ThomasTSWD/VSCode-Whois)](https://github.com/ThomasTSWD/VSCode-Whois/releases/latest)
+[![Release](https://img.shields.io/github/v/release/thomas-serment/VSCode-Whois)](https://github.com/thomas-serment/VSCode-Whois/releases/latest)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
 Look up WHOIS, RDAP and DNS records for any domain without leaving VS Code.
@@ -15,7 +15,7 @@ Look up WHOIS, RDAP and DNS records for any domain without leaving VS Code.
 
 ## Installation
 
-1. Download the latest `.vsix` from the [Releases](https://github.com/ThomasTSWD/VSCode-Whois/releases/latest) page
+1. Download the latest `.vsix` from the [Releases](https://github.com/thomas-serment/VSCode-Whois/releases/latest) page
 2. In VS Code, run **Extensions: Install from VSIX...** and select the file
 
 ## Usage
